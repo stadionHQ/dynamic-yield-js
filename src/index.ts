@@ -31,6 +31,8 @@ const EU_BASE_URL = "https://dy-api.eu";
 export class DynamicYieldClient {
   private config: DYApiConfig;
   private baseUrl: string;
+  private sessionId: string | null;
+  private userDyid: string | null;
 
   constructor(config: DYApiConfig) {
     const version = config.version ?? "v2";
@@ -43,6 +45,28 @@ export class DynamicYieldClient {
       dataCenter === "eu"
         ? `${EU_BASE_URL}/${version}`
         : `${US_BASE_URL}/${version}`;
+    this.sessionId = null;
+    this.userDyid = null;
+  }
+
+  setSessionAndUserDyId(sessionId: string, userDyId: string) {
+    this.sessionId = sessionId;
+    this.userDyid = userDyId;
+  }
+
+  private setJsonBody(body: Record<string, any>) {
+    if (!this.sessionId || !this.userDyid) {
+      throw new Error("Session ID and User DY ID are required");
+    }
+    return JSON.stringify({
+      session: {
+        id: this.sessionId,
+      },
+      user: {
+        dyid: this.userDyid,
+      },
+      ...body,
+    });
   }
 
   private getHeaders(contentType = true) {
@@ -60,7 +84,7 @@ export class DynamicYieldClient {
     const response = await fetch(`${this.baseUrl}/serve/user/choose`, {
       method: "POST",
       headers: this.getHeaders(),
-      body: JSON.stringify(body),
+      body: this.setJsonBody(body),
     });
     if (!response.ok)
       throw new Error(`Choose Variations failed: ${response.status}`);
@@ -73,7 +97,7 @@ export class DynamicYieldClient {
     const response = await fetch(`${this.baseUrl}/collect/user/pageview`, {
       method: "POST",
       headers: this.getHeaders(),
-      body: JSON.stringify(body),
+      body: this.setJsonBody(body),
     });
     if (!response.ok)
       throw new Error(`Track Pageviews failed: ${response.status}`);
@@ -86,7 +110,7 @@ export class DynamicYieldClient {
     const response = await fetch(`${this.baseUrl}/collect/user/engagement`, {
       method: "POST",
       headers: this.getHeaders(),
-      body: JSON.stringify(body),
+      body: this.setJsonBody(body),
     });
     if (!response.ok)
       throw new Error(`Track Engagement failed: ${response.status}`);
@@ -97,7 +121,7 @@ export class DynamicYieldClient {
     const response = await fetch(`${this.baseUrl}/serve/user/search`, {
       method: "POST",
       headers: this.getHeaders(),
-      body: JSON.stringify(body),
+      body: this.setJsonBody(body),
     });
     if (!response.ok) throw new Error(`Search failed: ${response.status}`);
     return response.json();
@@ -109,7 +133,7 @@ export class DynamicYieldClient {
     const response = await fetch(`${this.baseUrl}/collect/user/event`, {
       method: "POST",
       headers: this.getHeaders(),
-      body: JSON.stringify(body),
+      body: this.setJsonBody(body),
     });
     if (!response.ok)
       throw new Error(`Track Events failed: ${response.status}`);
@@ -123,7 +147,7 @@ export class DynamicYieldClient {
     const response = await fetch(`${this.baseUrl}/feeds/${feedId}/bulk`, {
       method: "POST",
       headers: this.getHeaders(),
-      body: JSON.stringify(body),
+      body: this.setJsonBody(body),
     });
     if (!response.ok)
       throw new Error(`Update Product Feed failed: ${response.status}`);
@@ -176,7 +200,7 @@ export class DynamicYieldClient {
       {
         method: "POST",
         headers: this.getHeaders(),
-        body: JSON.stringify(body),
+        body: this.setJsonBody(body),
       }
     );
     if (!response.ok)
@@ -190,7 +214,7 @@ export class DynamicYieldClient {
     const response = await fetch(`${this.baseUrl}/feeds/branch/outage/bulk`, {
       method: "POST",
       headers: this.getHeaders(),
-      body: JSON.stringify(body),
+      body: this.setJsonBody(body),
     });
     if (!response.ok)
       throw new Error(`Report Outages failed: ${response.status}`);
@@ -204,7 +228,7 @@ export class DynamicYieldClient {
     const response = await fetch(`${this.baseUrl}/userdata/${feedKey}/bulk`, {
       method: "POST",
       headers: this.getHeaders(),
-      body: JSON.stringify(body),
+      body: this.setJsonBody(body),
     });
     if (!response.ok)
       throw new Error(`User Data API failed: ${response.status}`);
@@ -218,7 +242,7 @@ export class DynamicYieldClient {
     const response = await fetch(`${this.baseUrl}/collect/user/external`, {
       method: "POST",
       headers: this.getHeaders(),
-      body: JSON.stringify(body),
+      body: this.setJsonBody(body),
     });
     if (!response.ok)
       throw new Error(`External Events API failed: ${response.status}`);

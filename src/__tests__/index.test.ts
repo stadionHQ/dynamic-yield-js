@@ -13,6 +13,7 @@ describe("DynamicYieldClient", () => {
   beforeEach(() => {
     client = new DynamicYieldClient(mockConfig);
     (global.fetch as jest.Mock).mockClear();
+    client.setSessionAndUserDyId("session-id", "user-dyid");
   });
 
   describe("chooseVariations", () => {
