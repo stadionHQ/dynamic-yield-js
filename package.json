@@ -1,0 +1,35 @@
+{
+  "name": "@stadionhq/dynamic-yield-js",
+  "version": "0.0.1",
+  "author": "StadionHQ",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stadionhq/dynamic-yield-js.git"
+  },
+  "keywords": [
+    "dynamic-yield",
+    "dynamic-yield-js",
+    "dynamic-yield-api",
+    "dynamic-yield-client",
+    "dynamic"
+  ],
+  "description": "Dynamic Yield API client for JavaScript",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.24",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.8.3"
+  }
+}
