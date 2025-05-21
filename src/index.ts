@@ -34,12 +34,13 @@ export class DynamicYieldClient {
 
   constructor(config: DYApiConfig) {
     const version = config.version ?? "v2";
+    const dataCenter = config.dataCenter ?? "us";
     this.config = {
       ...config,
       version,
     };
     this.baseUrl =
-      config.dataCenter === "eu"
+      dataCenter === "eu"
         ? `${EU_BASE_URL}/${version}`
         : `${US_BASE_URL}/${version}`;
   }
