@@ -5,7 +5,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/stadionhq/dynamic-yield-js.git"
+    "url": "git+https://github.com/stadionhq/dynamic-yield-js.git"
   },
   "keywords": [
     "dynamic-yield",
