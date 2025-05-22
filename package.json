@@ -1,6 +1,6 @@
 {
   "name": "@stadionhq/dynamic-yield-js",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "author": "StadionHQ",
   "license": "MIT",
   "private": false,
@@ -22,25 +22,23 @@
     "dist"
   ],
   "scripts": {
-    "build": "npm run build:preinstall && tsc",
+    "build": "tsc",
     "test": "echo 'The tests are not implemented yet'",
     "test:watch": "echo 'The tests are not implemented yet'",
-    "build:preinstall": "cd ./src/.api/apis/dy-dev-serve && yarn install && cd ../dy-dev && yarn install",
-    "generate-api:dy-dev-serve": "npx api install @dy-dev/v2.3.0#gqe12mawego61 --identifier dy-dev-serve --lang ts --yes && yarn remove @api/dy-dev-serve",
-    "generate-api:dy-dev": "npx api install @dy-dev/v2.3.0#gqeomawegkw6 --identifier dy-dev --lang ts --yes && yarn remove @api/dy-dev",
-    "generate-api": "rm -rf .api src/.api && npm run generate-api:dy-dev-serve && npm run generate-api:dy-dev && mv .api src/.api"
+    "generate-api:dy-dev-serve": "npx api install @dy-dev/v2.3.0#gqe12mawego61 --identifier dy-dev-serve --lang ts --yes && yarn remove @api/dy-dev-serve && cp .api/apis/dy-dev-serve/openapi.json src/openapi/openapi-dev-serve.json && rm -rf .api",
+    "generate-api:dy-dev": "npx api install @dy-dev/v2.3.0#gqeomawegkw6 --identifier dy-dev --lang ts --yes && yarn remove @api/dy-dev && cp .api/apis/dy-dev/openapi.json src/openapi/openapi-dev.json && rm -rf .api",
+    "generate-api": "npm run generate-api:dy-dev-serve && npm run generate-api:dy-dev && npx openapi-typescript ./src/openapi/openapi-dev.json -o ./src/openapi/openapi-dev.d.ts && npx openapi-typescript ./src/openapi/openapi-dev-serve.json -o ./src/openapi/openapi-dev-serve.d.ts"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "@types/lodash.merge": "^4.6.9",
     "@types/node": "^20.11.24",
     "jest": "^29.7.0",
-    "json-schema-to-ts": "^2.8.0-beta.0",
     "ts-jest": "^29.1.2",
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "fetch-mock": "^12.5.2",
-    "lodash.merge": "^4.6.2"
+    "lodash.merge": "^4.6.2",
+    "openapi-fetch": "^0.14.0"
   }
 }

@@ -238,11 +238,6 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.27.1"
 
-"@babel/runtime@^7.18.3":
-  version "7.27.1"
-  resolved "https://registry.npmjs.org/@babel/runtime/-/runtime-7.27.1.tgz"
-  integrity sha512-1x3D2xEk2fRo3PAhwQwu5UubzgiVWSXTBfWpVd2Mx2AzRqJuDJCsgaDVZ7HB5iGzDW1Hl1sWN2mFyKjmR9uAog==
-
 "@babel/template@^7.27.1", "@babel/template@^7.3.3":
   version "7.27.2"
   resolved "https://registry.npmjs.org/@babel/template/-/template-7.27.2.tgz"
@@ -570,11 +565,6 @@
   dependencies:
     "@babel/types" "^7.20.7"
 
-"@types/glob-to-regexp@^0.4.4":
-  version "0.4.4"
-  resolved "https://registry.npmjs.org/@types/glob-to-regexp/-/glob-to-regexp-0.4.4.tgz"
-  integrity sha512-nDKoaKJYbnn1MZxUY0cA1bPmmgZbg0cTq7Rh13d0KWYNOiKbqoR+2d89SnRPszGh7ROzSwZ/GOjZ4jPbmmZ6Eg==
-
 "@types/graceful-fs@^4.1.3":
   version "4.1.9"
   resolved "https://registry.npmjs.org/@types/graceful-fs/-/graceful-fs-4.1.9.tgz"
@@ -608,11 +598,6 @@
   dependencies:
     expect "^29.0.0"
     pretty-format "^29.0.0"
-
-"@types/json-schema@^7.0.9":
-  version "7.0.15"
-  resolved "https://registry.npmjs.org/@types/json-schema/-/json-schema-7.0.15.tgz"
-  integrity sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==
 
 "@types/lodash.merge@^4.6.9":
   version "4.6.9"
@@ -943,11 +928,6 @@ deepmerge@^4.2.2:
   resolved "https://registry.npmjs.org/deepmerge/-/deepmerge-4.3.1.tgz"
   integrity sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==
 
-dequal@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.npmjs.org/dequal/-/dequal-2.0.3.tgz"
-  integrity sha512-0je+qPKHEMohvfRTCEo3CrPG6cAzAYgmzKyxRiYSSDkS6eGJdyVJm7WaYA5ECaAD9wLB2T4EEeymA5aFVcYXCA==
-
 detect-newline@^3.0.0:
   version "3.1.0"
   resolved "https://registry.npmjs.org/detect-newline/-/detect-newline-3.1.0.tgz"
@@ -1045,16 +1025,6 @@ fb-watchman@^2.0.0:
   dependencies:
     bser "2.1.1"
 
-fetch-mock@^12.5.2:
-  version "12.5.2"
-  resolved "https://registry.npmjs.org/fetch-mock/-/fetch-mock-12.5.2.tgz"
-  integrity sha512-b5KGDFmdmado2MPQjZl6ix3dAG3iwCitb0XQwN72y2s9VnWZ3ObaGNy+bkpm1390foiLDybdJ7yjRGKD36kATw==
-  dependencies:
-    "@types/glob-to-regexp" "^0.4.4"
-    dequal "^2.0.3"
-    glob-to-regexp "^0.4.1"
-    regexparam "^3.0.0"
-
 filelist@^1.0.4:
   version "1.0.4"
   resolved "https://registry.npmjs.org/filelist/-/filelist-1.0.4.tgz"
@@ -1111,11 +1081,6 @@ get-stream@^6.0.0:
   version "6.0.1"
   resolved "https://registry.npmjs.org/get-stream/-/get-stream-6.0.1.tgz"
   integrity sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==
-
-glob-to-regexp@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.npmjs.org/glob-to-regexp/-/glob-to-regexp-0.4.1.tgz"
-  integrity sha512-lkX1HJXwyMcprw/5YUZc2s7DrpAiHB21/V+E1rHUrVNokkvB6bqMzT0VfV6/86ZNabt1k14YOIaT7nDvOX3Iiw==
 
 glob@^7.1.3, glob@^7.1.4:
   version "7.2.3"
@@ -1668,15 +1633,6 @@ json-parse-even-better-errors@^2.3.0:
   resolved "https://registry.npmjs.org/json-parse-even-better-errors/-/json-parse-even-better-errors-2.3.1.tgz"
   integrity sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w==
 
-json-schema-to-ts@^2.8.0-beta.0:
-  version "2.12.0"
-  resolved "https://registry.npmjs.org/json-schema-to-ts/-/json-schema-to-ts-2.12.0.tgz"
-  integrity sha512-uTde38yBm5lzJSRPWRaasxZo72pb+JGE4iUksNdNfAkFaLhV4N9akeBxPPUpZy5onINt9Zo0oTLrAoEXyZESiQ==
-  dependencies:
-    "@babel/runtime" "^7.18.3"
-    "@types/json-schema" "^7.0.9"
-    ts-algebra "^1.2.2"
-
 json5@^2.2.3:
   version "2.2.3"
   resolved "https://registry.npmjs.org/json5/-/json5-2.2.3.tgz"
@@ -1818,6 +1774,18 @@ onetime@^5.1.2:
   dependencies:
     mimic-fn "^2.1.0"
 
+openapi-fetch@^0.14.0:
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/openapi-fetch/-/openapi-fetch-0.14.0.tgz#4f87d867cb91edf0b63acb7e5eaf366517dcb545"
+  integrity sha512-PshIdm1NgdLvb05zp8LqRQMNSKzIlPkyMxYFxwyHR+UlKD4t2nUjkDhNxeRbhRSEd3x5EUNh2w5sJYwkhOH4fg==
+  dependencies:
+    openapi-typescript-helpers "^0.0.15"
+
+openapi-typescript-helpers@^0.0.15:
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/openapi-typescript-helpers/-/openapi-typescript-helpers-0.0.15.tgz#96ffa762a5e01ef66a661b163d5f1109ed1967ed"
+  integrity sha512-opyTPaunsklCBpTK8JGef6mfPhLSnyy5a0IN9vKtx3+4aExf+KxEqYwIy3hqkedXIB97u357uLMJsOnm3GVjsw==
+
 p-limit@^2.2.0:
   version "2.3.0"
   resolved "https://registry.npmjs.org/p-limit/-/p-limit-2.3.0.tgz"
@@ -1922,11 +1890,6 @@ react-is@^18.0.0:
   version "18.3.1"
   resolved "https://registry.npmjs.org/react-is/-/react-is-18.3.1.tgz"
   integrity sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==
-
-regexparam@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.npmjs.org/regexparam/-/regexparam-3.0.0.tgz"
-  integrity sha512-RSYAtP31mvYLkAHrOlh25pCNQ5hWnT106VukGaaFfuJrZFkGRX5GhUAdPqpSDXxOhA2c4akmRuplv1mRqnBn6Q==
 
 require-directory@^2.1.1:
   version "2.1.1"
@@ -2099,11 +2062,6 @@ to-regex-range@^5.0.1:
   integrity sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==
   dependencies:
     is-number "^7.0.0"
-
-ts-algebra@^1.2.2:
-  version "1.2.2"
-  resolved "https://registry.npmjs.org/ts-algebra/-/ts-algebra-1.2.2.tgz"
-  integrity sha512-kloPhf1hq3JbCPOTYoOWDKxebWjNb2o/LKnNfkWhxVVisFFmMJPPdJeGoGmM+iRLyoXAR61e08Pb+vUXINg8aA==
 
 ts-jest@^29.1.2:
   version "29.3.4"

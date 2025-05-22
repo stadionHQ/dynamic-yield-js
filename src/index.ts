@@ -1,24 +1,13 @@
 import merge from "lodash.merge";
-import ServeSDK, {
-  ChooseVariationsBodyParam,
-  SearchBodyParam,
-} from "./.api/apis/dy-dev-serve";
-import SDK, {
-  ExternalEventsBodyParam,
-  ProfileAnywhereMetadataParam,
-  ReportOutagesBodyParam,
-  TrackEngagementBodyParam,
-  TrackEventsBodyParam,
-  TrackPageviewsBodyParam,
-  TrackTransactionStatusSpecificItemMetadataParam,
-  TrackTransactionStatusWholeTransactionMetadataParam,
-  UpdateBranchFeedBodyParam,
-  UpdateBranchFeedMetadataParam,
-  UpdateProductFeedBodyParam,
-  UpdateProductFeedMetadataParam,
-  UserDataApiBodyParam,
-  UserDataApiMetadataParam,
-} from "./.api/apis/dy-dev";
+import {
+  operations as operationsServe,
+  paths as pathsServe,
+} from "./openapi/openapi-dev-serve";
+import {
+  operations as operationsDefault,
+  paths as pathsDefault,
+} from "./openapi/openapi-dev";
+import createClient from "openapi-fetch";
 
 type WithOptionalSessionAndUser<T> = T & {
   session?: {
@@ -31,21 +20,33 @@ type WithOptionalSessionAndUser<T> = T & {
 };
 
 export class DynamicYieldClient {
-  private serveSdk: typeof ServeSDK;
-  private defaultSdk: typeof SDK;
+  private clientServe: ReturnType<typeof createClient<pathsServe>> | null =
+    null;
+  private clientDefault: ReturnType<typeof createClient<pathsDefault>> | null =
+    null;
   private sessionId: string | null;
   private userDyid: string | null;
 
   constructor(config: { apiKey: string; dataCenter: "us" | "eu" }) {
     const dataCenter = config.dataCenter ?? "us";
-    this.serveSdk = ServeSDK.auth(config.apiKey);
-    this.defaultSdk = SDK.auth(config.apiKey);
-    this.serveSdk.server(
-      dataCenter === "eu" ? "https://dy-api.eu/v2" : "https://dy-api.com/v2"
-    );
-    this.defaultSdk.server(
-      dataCenter === "eu" ? "https://dy-api.eu/v2" : "https://dy-api.com/v2"
-    );
+    const baseUrl =
+      dataCenter === "eu" ? "https://dy-api.eu/v2" : "https://dy-api.com/v2";
+    this.clientServe = createClient<pathsServe>({
+      baseUrl,
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+        "dy-api-key": config.apiKey,
+      },
+    });
+    this.clientDefault = createClient<pathsDefault>({
+      baseUrl,
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+        "dy-api-key": config.apiKey,
+      },
+    });
     this.sessionId = null;
     this.userDyid = null;
   }
@@ -74,93 +75,204 @@ export class DynamicYieldClient {
 
   async chooseVariations(
     body: WithOptionalSessionAndUser<
-      Pick<ChooseVariationsBodyParam, "options" | "context" | "selector">
+      Pick<
+        operationsServe["chooseVariations"]["requestBody"]["content"]["application/json"],
+        "context" | "options" | "selector"
+      >
     >
-  ): ReturnType<typeof ServeSDK.chooseVariations> {
+  ) {
     const bodyWithSessionAndUser = this.setBody(body);
-    return this.serveSdk.chooseVariations(bodyWithSessionAndUser);
+    return this.clientServe?.POST("/serve/user/choose", {
+      body: bodyWithSessionAndUser,
+    });
   }
 
   async trackPageviews(
     body: WithOptionalSessionAndUser<
-      Pick<TrackPageviewsBodyParam, "options" | "context">
+      Pick<
+        operationsDefault["trackPageviews"]["requestBody"]["content"]["application/json"],
+        "options" | "context"
+      >
     >
-  ): ReturnType<typeof SDK.trackPageviews> {
-    return this.defaultSdk.trackPageviews(this.setBody(body));
+  ) {
+    return this.clientDefault?.POST("/collect/user/pageview", {
+      body: this.setBody(body),
+    });
   }
 
   async trackEngagement(
     body: WithOptionalSessionAndUser<
-      Pick<TrackEngagementBodyParam, "engagements" | "context">
+      Pick<
+        operationsDefault["trackEngagement"]["requestBody"]["content"]["application/json"],
+        "engagements" | "context"
+      >
     >
-  ): ReturnType<typeof SDK.trackEngagement> {
-    return this.defaultSdk.trackEngagement(this.setBody(body));
+  ) {
+    return this.clientDefault?.POST("/collect/user/engagement", {
+      body: this.setBody(body),
+    });
   }
 
   async search(
-    body: WithOptionalSessionAndUser<Pick<SearchBodyParam, "options" | "query">>
-  ): ReturnType<typeof ServeSDK.search> {
-    return this.serveSdk.search(this.setBody(body));
+    body: WithOptionalSessionAndUser<
+      Pick<
+        operationsServe["search"]["requestBody"]["content"]["application/json"],
+        "options" | "query"
+      >
+    >
+  ) {
+    return this.clientServe?.POST("/serve/user/search", {
+      body: this.setBody(body),
+    });
   }
 
   async trackEvents(
     body: WithOptionalSessionAndUser<
-      Pick<TrackEventsBodyParam, "context" | "events">
+      Pick<
+        operationsDefault["trackEvents"]["requestBody"]["content"]["application/json"],
+        "context" | "events"
+      >
     >
-  ): ReturnType<typeof SDK.trackEvents> {
-    return this.defaultSdk.trackEvents(this.setBody(body));
+  ) {
+    return this.clientDefault?.POST("/collect/user/event", {
+      body: this.setBody(body),
+    });
   }
 
-  async updateProductFeed(
-    params: UpdateProductFeedBodyParam,
-    metadata: UpdateProductFeedMetadataParam
-  ): ReturnType<typeof SDK.updateProductFeed> {
-    return this.defaultSdk.updateProductFeed(params, metadata);
+  async updateProductFeed({
+    feedId,
+    body,
+  }: {
+    feedId: string;
+    body: operationsDefault["updateProductFeed"]["requestBody"]["content"]["application/json"];
+  }) {
+    return this.clientDefault?.POST("/feeds/{feedId}/bulk", {
+      body: this.setBody(body),
+      params: {
+        path: {
+          feedId,
+        },
+      },
+    });
   }
 
-  async trackTransactionStatusSpecificItem(
-    params: TrackTransactionStatusSpecificItemMetadataParam
-  ): ReturnType<typeof SDK.trackTransactionStatusSpecificItem> {
-    return this.defaultSdk.trackTransactionStatusSpecificItem(params);
+  async trackTransactionStatusSpecificItem({
+    feedId,
+    transactionId,
+    itemId,
+  }: {
+    feedId: string;
+    transactionId: string;
+    itemId: string;
+  }) {
+    return this.clientDefault?.GET(
+      "/feeds/{feedId}/transaction/{transactionId}/item/{itemId}",
+      {
+        params: {
+          path: {
+            feedId,
+            transactionId,
+            itemId,
+          },
+        },
+      }
+    );
   }
 
-  async trackTransactionStatusWholeTransaction(
-    params: TrackTransactionStatusWholeTransactionMetadataParam
-  ): ReturnType<typeof SDK.trackTransactionStatusWholeTransaction> {
-    return this.defaultSdk.trackTransactionStatusWholeTransaction(params);
+  async trackTransactionStatusWholeTransaction({
+    feedId,
+    transactionId,
+  }: {
+    feedId: string;
+    transactionId: string;
+  }) {
+    return this.clientDefault?.GET(
+      "/feeds/{feedId}/transaction/{transactionId}",
+      {
+        params: {
+          path: {
+            feedId,
+            transactionId,
+          },
+        },
+      }
+    );
   }
 
-  async updateBranchFeed(
-    params: UpdateBranchFeedBodyParam,
-    metadata: UpdateBranchFeedMetadataParam
-  ): ReturnType<typeof SDK.updateBranchFeed> {
-    return this.defaultSdk.updateBranchFeed(params, metadata);
+  async updateBranchFeed({
+    id,
+    body,
+  }: {
+    id: string;
+    body: operationsDefault["updateBranchFeed"]["requestBody"]["content"]["application/json"];
+  }) {
+    return this.clientDefault?.POST("/feeds/branch/{id}/inventory", {
+      body: this.setBody(body),
+      params: {
+        path: {
+          id,
+        },
+      },
+    });
   }
 
-  async reportOutages(
-    body: ReportOutagesBodyParam
-  ): ReturnType<typeof SDK.reportOutages> {
-    return this.defaultSdk.reportOutages(body);
+  async reportOutages({
+    body,
+  }: {
+    body: operationsDefault["reportOutages"]["requestBody"]["content"]["application/json"];
+  }) {
+    return this.clientDefault?.POST("/feeds/branch/outage/bulk", {
+      body: this.setBody(body),
+    });
   }
 
-  async userDataApi(
-    params: UserDataApiBodyParam,
-    metadata: UserDataApiMetadataParam
-  ): ReturnType<typeof SDK.userDataApi> {
-    return this.defaultSdk.userDataApi(params, metadata);
+  async userDataApi({
+    feedKey,
+    body,
+  }: {
+    feedKey: string;
+    body: operationsDefault["userDataApi"]["requestBody"]["content"]["application/json"];
+  }) {
+    return this.clientDefault?.POST("/userdata/{feedKey}/bulk", {
+      body: this.setBody(body),
+      params: {
+        path: {
+          feedKey,
+        },
+      },
+    });
   }
 
   async externalEventsApi(
     body: WithOptionalSessionAndUser<
-      Pick<ExternalEventsBodyParam, "device" | "events">
+      Pick<
+        operationsDefault["externalEvents"]["requestBody"]["content"]["application/json"],
+        "device" | "events"
+      >
     >
-  ): ReturnType<typeof SDK.externalEvents> {
-    return this.defaultSdk.externalEvents(this.setBody(body));
+  ) {
+    return this.clientDefault?.POST("/userdata/events", {
+      body: this.setBody(body),
+    });
   }
 
-  async profileAnywhere(
-    params: ProfileAnywhereMetadataParam
-  ): ReturnType<typeof SDK.profileAnywhere> {
-    return this.defaultSdk.profileAnywhere(params);
+  async profileAnywhere({
+    cuid,
+    cuidType,
+    affinity,
+  }: {
+    cuid: string;
+    cuidType: string;
+    affinity: boolean;
+  }) {
+    return this.clientDefault?.GET("/userprofile", {
+      params: {
+        query: {
+          cuid,
+          cuidType,
+          affinity,
+        },
+      },
+    });
   }
 }
