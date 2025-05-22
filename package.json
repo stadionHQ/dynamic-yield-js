@@ -1,6 +1,6 @@
 {
   "name": "@stadionhq/dynamic-yield-js",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "author": "StadionHQ",
   "license": "MIT",
   "private": false,
@@ -25,7 +25,6 @@
     "build": "tsc",
     "test": "echo 'The tests are not implemented yet'",
     "test:watch": "echo 'The tests are not implemented yet'",
-    "preinstall": "cd ./src/.api/apis/dy-dev-serve && yarn install && cd ../dy-dev && yarn install",
     "generate-api:dy-dev-serve": "npx api install @dy-dev/v2.3.0#gqe12mawego61 --identifier dy-dev-serve --lang ts --yes && yarn remove @api/dy-dev-serve",
     "generate-api:dy-dev": "npx api install @dy-dev/v2.3.0#gqeomawegkw6 --identifier dy-dev --lang ts --yes && yarn remove @api/dy-dev",
     "generate-api": "rm -rf .api src/.api && npm run generate-api:dy-dev-serve && npm run generate-api:dy-dev && mv .api src/.api"
