@@ -20,26 +20,13 @@ import SDK, {
   UserDataApiMetadataParam,
 } from "./.api/apis/dy-dev";
 
-export type DyTypeWithOptionalSessionAndUser<T> = Omit<
-  T,
-  "session" | "user"
-> & {
+type WithOptionalSessionAndUser<T> = T & {
   session?: {
     id: string;
   };
   user?: {
     dyid: string;
-    sharedDevice: boolean;
-  };
-};
-
-export type DyTypeWithRequiredSessionAndUser<T> = T & {
-  session: {
-    id: string;
-  };
-  user: {
-    dyid: string;
-    sharedDevice: boolean;
+    dyid_server?: string;
   };
 };
 
@@ -68,49 +55,58 @@ export class DynamicYieldClient {
     this.userDyid = userDyId;
   }
 
-  private setBody<T>(
-    body: DyTypeWithOptionalSessionAndUser<T>
-  ): DyTypeWithRequiredSessionAndUser<T> {
+  private setBody(body: any) {
     if (!this.sessionId || !this.userDyid) {
       throw new Error("Session ID and User DY ID are required");
     }
-    return merge(body, {
-      session: {
-        id: this.sessionId,
+    return merge(
+      {
+        session: {
+          id: this.sessionId,
+        },
+        user: {
+          dyid: this.userDyid,
+        },
       },
-      user: {
-        dyid: this.userDyid,
-        sharedDevice: false,
-      },
-    }) as DyTypeWithRequiredSessionAndUser<T>;
+      body
+    );
   }
 
   async chooseVariations(
-    body: DyTypeWithOptionalSessionAndUser<ChooseVariationsBodyParam>
+    body: WithOptionalSessionAndUser<
+      Pick<ChooseVariationsBodyParam, "options" | "context" | "selector">
+    >
   ): ReturnType<typeof ServeSDK.chooseVariations> {
-    return this.serveSdk.chooseVariations(this.setBody(body));
+    const bodyWithSessionAndUser = this.setBody(body);
+    return this.serveSdk.chooseVariations(bodyWithSessionAndUser);
   }
 
   async trackPageviews(
-    body: DyTypeWithOptionalSessionAndUser<TrackPageviewsBodyParam>
+    body: WithOptionalSessionAndUser<
+      Pick<TrackPageviewsBodyParam, "options" | "context">
+    >
   ): ReturnType<typeof SDK.trackPageviews> {
     return this.defaultSdk.trackPageviews(this.setBody(body));
   }
 
   async trackEngagement(
-    body: DyTypeWithOptionalSessionAndUser<TrackEngagementBodyParam>
+    body: WithOptionalSessionAndUser<
+      Pick<TrackEngagementBodyParam, "engagements" | "context">
+    >
   ): ReturnType<typeof SDK.trackEngagement> {
     return this.defaultSdk.trackEngagement(this.setBody(body));
   }
 
   async search(
-    body: DyTypeWithOptionalSessionAndUser<SearchBodyParam>
+    body: WithOptionalSessionAndUser<Pick<SearchBodyParam, "options" | "query">>
   ): ReturnType<typeof ServeSDK.search> {
     return this.serveSdk.search(this.setBody(body));
   }
 
   async trackEvents(
-    body: DyTypeWithOptionalSessionAndUser<TrackEventsBodyParam>
+    body: WithOptionalSessionAndUser<
+      Pick<TrackEventsBodyParam, "context" | "events">
+    >
   ): ReturnType<typeof SDK.trackEvents> {
     return this.defaultSdk.trackEvents(this.setBody(body));
   }
@@ -155,7 +151,9 @@ export class DynamicYieldClient {
   }
 
   async externalEventsApi(
-    body: DyTypeWithOptionalSessionAndUser<ExternalEventsBodyParam>
+    body: WithOptionalSessionAndUser<
+      Pick<ExternalEventsBodyParam, "device" | "events">
+    >
   ): ReturnType<typeof SDK.externalEvents> {
     return this.defaultSdk.externalEvents(this.setBody(body));
   }
