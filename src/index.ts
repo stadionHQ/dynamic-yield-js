@@ -2,7 +2,7 @@ import merge from "lodash.merge";
 import ServeSDK, {
   ChooseVariationsBodyParam,
   SearchBodyParam,
-} from "@api/dy-dev-serve";
+} from "./.api/apis/dy-dev-serve";
 import SDK, {
   ExternalEventsBodyParam,
   ProfileAnywhereMetadataParam,
@@ -18,7 +18,7 @@ import SDK, {
   UpdateProductFeedMetadataParam,
   UserDataApiBodyParam,
   UserDataApiMetadataParam,
-} from "@api/dy-dev";
+} from "./.api/apis/dy-dev";
 
 export type DyTypeWithOptionalSessionAndUser<T> = Omit<
   T,
