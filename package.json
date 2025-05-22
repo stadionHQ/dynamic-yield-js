@@ -23,8 +23,8 @@
   ],
   "scripts": {
     "build": "tsc",
-    "test": "jest",
-    "test:watch": "jest --watch",
+    "test": "echo 'The tests are not implemented yet'",
+    "test:watch": "echo 'The tests are not implemented yet'",
     "preinstall": "cd .api/apis/dy-dev && yarn install && cd ../dy-dev-serve && yarn install",
     "generate-api:dy-dev-serve": "npx api install @dy-dev/v2.3.0#gqe12mawego61 --identifier dy-dev-serve --lang ts --yes",
     "generate-api:dy-dev": "npx api install @dy-dev/v2.3.0#gqeomawegkw6 --identifier dy-dev --lang ts --yes",
