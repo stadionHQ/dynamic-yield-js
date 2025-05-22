@@ -11,7 +11,7 @@ import createClient from "openapi-fetch";
 
 type WithOptionalSessionAndUser<T> = T & {
   session?: {
-    id: string;
+    dy: string;
   };
   user?: {
     dyid: string;
@@ -63,7 +63,7 @@ export class DynamicYieldClient {
     return merge(
       {
         session: {
-          id: this.sessionId,
+          dy: this.sessionId,
         },
         user: {
           dyid: this.userDyid,
