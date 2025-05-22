@@ -1,0 +1,17 @@
+{
+  "version": "1.0",
+  "apis": [
+    {
+      "identifier": "dy-dev-serve",
+      "source": "@dy-dev/v2.3.0#gqe12mawego61",
+      "integrity": "sha512-6kmebStkp0cBnej00ZtfWTQg3A5xHMRqALaEsdS/RQGyQ+ZfRNC5aGz1dlJm4EGq6YitTVYLyeo7S1omkzybxw==",
+      "installerVersion": "6.1.3"
+    },
+    {
+      "identifier": "dy-dev",
+      "source": "@dy-dev/v2.3.0#gqeomawegkw6",
+      "integrity": "sha512-lrXtqpYJOmwbqf17ecX5CDF1dGt93z46VkvbPAYq3/vrm591tkJtiXJG+0maQiK9U6vmnN4pU4KsMd7KC68dsQ==",
+      "installerVersion": "6.1.3"
+    }
+  ]
+}
