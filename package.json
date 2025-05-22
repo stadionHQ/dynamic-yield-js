@@ -1,6 +1,6 @@
 {
   "name": "@stadionhq/dynamic-yield-js",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "author": "StadionHQ",
   "license": "MIT",
   "private": false,
@@ -27,7 +27,7 @@
     "test:watch": "echo 'The tests are not implemented yet'",
     "generate-api:dy-dev-serve": "npx api install @dy-dev/v2.3.0#gqe12mawego61 --identifier dy-dev-serve --lang ts --yes && yarn remove @api/dy-dev-serve && cp .api/apis/dy-dev-serve/openapi.json src/openapi/openapi-dev-serve.json && rm -rf .api",
     "generate-api:dy-dev": "npx api install @dy-dev/v2.3.0#gqeomawegkw6 --identifier dy-dev --lang ts --yes && yarn remove @api/dy-dev && cp .api/apis/dy-dev/openapi.json src/openapi/openapi-dev.json && rm -rf .api",
-    "generate-api": "npm run generate-api:dy-dev-serve && npm run generate-api:dy-dev && npx openapi-typescript ./src/openapi/openapi-dev.json -o ./src/openapi/openapi-dev.d.ts && npx openapi-typescript ./src/openapi/openapi-dev-serve.json -o ./src/openapi/openapi-dev-serve.d.ts"
+    "generate-api": "npm run generate-api:dy-dev-serve && npm run generate-api:dy-dev && npx openapi-typescript ./src/openapi/openapi-dev.json -o ./src/openapi/openapi-dev.ts && npx openapi-typescript ./src/openapi/openapi-dev-serve.json -o ./src/openapi/openapi-dev-serve.ts"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
