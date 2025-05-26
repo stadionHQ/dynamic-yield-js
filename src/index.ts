@@ -54,6 +54,27 @@ export class DynamicYieldClient {
   setSessionAndUserDyId(sessionId: string, userDyId: string) {
     this.sessionId = sessionId;
     this.userDyid = userDyId;
+    this.clientDefault?.POST("/collect/user/event", {
+      body: {
+        context: {},
+        session: {
+          dy: this.sessionId,
+        },
+        user: {
+          dyid: this.userDyid,
+        },
+        events: [
+          {
+            name: "IDENTIFY",
+            properties: {
+              dyType: "identify-v1",
+              cuid: this.userDyid,
+              cuidType: "account_id",
+            },
+          },
+        ],
+      },
+    });
   }
 
   private setBody(body: any) {
