@@ -7,7 +7,7 @@ import {
   operations as operationsDefault,
   paths as pathsDefault,
 } from "./openapi/openapi-dev";
-import createClient from "openapi-fetch";
+import createClient, { Middleware } from "openapi-fetch";
 
 type WithOptionalSessionAndUser<T> = T & {
   session?: {
@@ -18,6 +18,30 @@ type WithOptionalSessionAndUser<T> = T & {
     dyid_server?: string;
   };
 };
+
+const getSessionAndUserMiddleware = (
+  setter: (sessionId: string, userDyid: string) => void
+): Middleware => ({
+  async onResponse({ response }) {
+    const { json } = response;
+    const body = await json();
+    const hasCookies = "cookies" in body && Array.isArray(body.cookies);
+    if (!hasCookies) {
+      return response;
+    }
+    const cookies = body.cookies as {
+      name: string;
+      value: string;
+      maxAge: number;
+    }[];
+    const userDyid =
+      cookies.find((cookie) => cookie.name === "_dyid_server")?.value ?? "";
+    const sessionId =
+      cookies.find((cookie) => cookie.name === "_dyjsession")?.value ?? "";
+    setter(sessionId, userDyid);
+    return response;
+  },
+});
 
 export class DynamicYieldClient {
   private clientServe: ReturnType<typeof createClient<pathsServe>> | null =
@@ -39,6 +63,12 @@ export class DynamicYieldClient {
         "dy-api-key": config.apiKey,
       },
     });
+    this.clientServe.use(
+      getSessionAndUserMiddleware((sessionId, userDyid) => {
+        this.sessionId = sessionId;
+        this.userDyid = userDyid;
+      })
+    );
     this.clientDefault = createClient<pathsDefault>({
       baseUrl,
       headers: {
@@ -49,32 +79,6 @@ export class DynamicYieldClient {
     });
     this.sessionId = null;
     this.userDyid = null;
-  }
-
-  setSessionAndUserDyId(sessionId: string, userDyId: string) {
-    this.sessionId = sessionId;
-    this.userDyid = userDyId;
-    this.clientDefault?.POST("/collect/user/event", {
-      body: {
-        context: {},
-        session: {
-          dy: this.sessionId,
-        },
-        user: {
-          dyid: this.userDyid,
-        },
-        events: [
-          {
-            name: "IDENTIFY",
-            properties: {
-              dyType: "identify-v1",
-              cuid: this.userDyid,
-              cuidType: "account_id",
-            },
-          },
-        ],
-      },
-    });
   }
 
   private setBody(body: any) {
