@@ -31,20 +31,18 @@ const getSessionAndUserMiddleware = (
     const { body, ...resOptions } = response;
     const data = await response.json();
     const hasCookies = data && "cookies" in data && Array.isArray(data.cookies);
-    if (!hasCookies) {
-      return new Response(body, { ...resOptions });
+    if (hasCookies) {
+      const cookies = data.cookies as {
+        name: string;
+        value: string;
+        maxAge: number;
+      }[];
+      const userDyid =
+        cookies.find((cookie) => cookie.name === "_dyid_server")?.value ?? "";
+      const sessionId =
+        cookies.find((cookie) => cookie.name === "_dyjsession")?.value ?? "";
+      setter(sessionId, userDyid);
     }
-    const cookies = data.cookies as {
-      name: string;
-      value: string;
-      maxAge: number;
-    }[];
-    const userDyid =
-      cookies.find((cookie) => cookie.name === "_dyid_server")?.value ?? "";
-    const sessionId =
-      cookies.find((cookie) => cookie.name === "_dyjsession")?.value ?? "";
-    setter(sessionId, userDyid);
-    return new Response(body, { ...resOptions });
   },
 });
 
