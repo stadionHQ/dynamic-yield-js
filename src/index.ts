@@ -28,10 +28,11 @@ const getSessionAndUserMiddleware = (
   setter: (sessionId: string, userDyid: string) => void
 ): Middleware => ({
   async onResponse({ response }) {
+    const { body, ...resOptions } = response;
     const data = await response.json();
     const hasCookies = data && "cookies" in data && Array.isArray(data.cookies);
     if (!hasCookies) {
-      return response;
+      return new Response(body, { ...resOptions });
     }
     const cookies = data.cookies as {
       name: string;
@@ -43,7 +44,7 @@ const getSessionAndUserMiddleware = (
     const sessionId =
       cookies.find((cookie) => cookie.name === "_dyjsession")?.value ?? "";
     setter(sessionId, userDyid);
-    return response;
+    return new Response(body, { ...resOptions });
   },
 });
 
