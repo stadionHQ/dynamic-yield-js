@@ -23,13 +23,12 @@ const getSessionAndUserMiddleware = (
   setter: (sessionId: string, userDyid: string) => void
 ): Middleware => ({
   async onResponse({ response }) {
-    const { json } = response;
-    const body = await json();
-    const hasCookies = "cookies" in body && Array.isArray(body.cookies);
+    const data = await response.json();
+    const hasCookies = data && "cookies" in data && Array.isArray(data.cookies);
     if (!hasCookies) {
       return response;
     }
-    const cookies = body.cookies as {
+    const cookies = data.cookies as {
       name: string;
       value: string;
       maxAge: number;
