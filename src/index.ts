@@ -19,6 +19,11 @@ type WithOptionalSessionAndUser<T> = T & {
   };
 };
 
+type Storage = {
+  getItem: (key: string) => string | null;
+  setItem: (key: string, value: string) => void;
+};
+
 const getSessionAndUserMiddleware = (
   setter: (sessionId: string, userDyid: string) => void
 ): Middleware => ({
@@ -49,10 +54,16 @@ export class DynamicYieldClient {
     null;
   private sessionId: string | null = null;
   private userDyid: string | null = null;
+  private storage: Storage;
 
-  constructor(config: { apiKey: string; dataCenter: "us" | "eu" }) {
-    this.sessionId = null;
-    this.userDyid = null;
+  constructor(config: {
+    apiKey: string;
+    dataCenter: "us" | "eu";
+    storage: Storage;
+  }) {
+    this.storage = config.storage;
+    this.sessionId = this.storage.getItem("dyjsession");
+    this.userDyid = this.storage.getItem("dyid_server");
     const dataCenter = config.dataCenter ?? "us";
     const baseUrl =
       dataCenter === "eu" ? "https://dy-api.eu/v2" : "https://dy-api.com/v2";
@@ -66,8 +77,13 @@ export class DynamicYieldClient {
     });
     this.clientServe.use(
       getSessionAndUserMiddleware((sessionId, userDyid) => {
-        this.sessionId = sessionId;
-        this.userDyid = userDyid;
+        if (!this.sessionId || !this.userDyid) {
+          this.sessionId = sessionId;
+          this.userDyid = userDyid;
+          this.storage.setItem("dyjsession", sessionId);
+          this.storage.setItem("dyid_server", userDyid);
+          return;
+        }
       })
     );
     this.clientDefault = createClient<pathsDefault>({
