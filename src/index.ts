@@ -8,7 +8,6 @@ import {
   paths as pathsDefault,
 } from "./openapi/openapi-dev";
 import createClient, { Middleware } from "openapi-fetch";
-import { v4 as uuidv4 } from "uuid";
 
 type WithOptionalSessionAndUser<T> = T & {
   session?: {
@@ -53,8 +52,8 @@ export class DynamicYieldClient {
   private userDyid: string | null = null;
 
   constructor(config: { apiKey: string; dataCenter: "us" | "eu" }) {
-    this.sessionId = uuidv4();
-    this.userDyid = uuidv4();
+    this.sessionId = null;
+    this.userDyid = null;
     const dataCenter = config.dataCenter ?? "us";
     const baseUrl =
       dataCenter === "eu" ? "https://dy-api.eu/v2" : "https://dy-api.com/v2";
@@ -83,16 +82,13 @@ export class DynamicYieldClient {
   }
 
   private setBody(body: any) {
-    if (!this.sessionId || !this.userDyid) {
-      throw new Error("Session ID and User DY ID are required");
-    }
     return merge(
       {
         session: {
-          dy: this.sessionId,
+          dy: this.sessionId ?? "",
         },
         user: {
-          dyid: this.userDyid,
+          dyid: this.userDyid ?? "",
         },
       },
       body
