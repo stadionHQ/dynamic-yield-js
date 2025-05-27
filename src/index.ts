@@ -28,21 +28,26 @@ const getSessionAndUserMiddleware = (
   setter: (sessionId: string, userDyid: string) => void
 ): Middleware => ({
   async onResponse({ response }) {
-    const { body, ...resOptions } = response;
-    const data = await response.json();
-    const hasCookies = data && "cookies" in data && Array.isArray(data.cookies);
-    if (hasCookies) {
-      const cookies = data.cookies as {
-        name: string;
-        value: string;
-        maxAge: number;
-      }[];
-      const userDyid =
-        cookies.find((cookie) => cookie.name === "_dyid_server")?.value ?? "";
-      const sessionId =
-        cookies.find((cookie) => cookie.name === "_dyjsession")?.value ?? "";
-      setter(sessionId, userDyid);
+    try {
+      const data = await response.json();
+      const hasCookies =
+        data && "cookies" in data && Array.isArray(data.cookies);
+      if (hasCookies) {
+        const cookies = data.cookies as {
+          name: string;
+          value: string;
+          maxAge: number;
+        }[];
+        const userDyid =
+          cookies.find((cookie) => cookie.name === "_dyid_server")?.value ?? "";
+        const sessionId =
+          cookies.find((cookie) => cookie.name === "_dyjsession")?.value ?? "";
+        setter(sessionId, userDyid);
+      }
+    } catch (error) {
+      console.error("[DY] Error getting session and user from response", error);
     }
+    return response.clone();
   },
 });
 
@@ -53,16 +58,14 @@ export class DynamicYieldClient {
     null;
   private sessionId: string | null = null;
   private userDyid: string | null = null;
-  private storage: Storage;
 
   constructor(config: {
     apiKey: string;
     dataCenter: "us" | "eu";
     storage: Storage;
   }) {
-    this.storage = config.storage;
-    this.sessionId = this.storage.getItem("dyjsession");
-    this.userDyid = this.storage.getItem("dyid_server");
+    this.sessionId = config.storage.getItem("dyjsession");
+    this.userDyid = config.storage.getItem("dyid_server");
     const dataCenter = config.dataCenter ?? "us";
     const baseUrl =
       dataCenter === "eu" ? "https://dy-api.eu/v2" : "https://dy-api.com/v2";
@@ -79,8 +82,8 @@ export class DynamicYieldClient {
         if (!this.sessionId || !this.userDyid) {
           this.sessionId = sessionId;
           this.userDyid = userDyid;
-          this.storage.setItem("dyjsession", sessionId);
-          this.storage.setItem("dyid_server", userDyid);
+          config.storage.setItem("dyjsession", sessionId);
+          config.storage.setItem("dyid_server", userDyid);
           return;
         }
       })
