@@ -8,6 +8,7 @@ import {
   paths as pathsDefault,
 } from "./openapi/openapi-dev";
 import createClient, { Middleware } from "openapi-fetch";
+import { v4 as uuidv4 } from "uuid";
 
 type WithOptionalSessionAndUser<T> = T & {
   session?: {
@@ -48,10 +49,12 @@ export class DynamicYieldClient {
     null;
   private clientDefault: ReturnType<typeof createClient<pathsDefault>> | null =
     null;
-  private sessionId: string | null;
-  private userDyid: string | null;
+  private sessionId: string | null = null;
+  private userDyid: string | null = null;
 
   constructor(config: { apiKey: string; dataCenter: "us" | "eu" }) {
+    this.sessionId = uuidv4();
+    this.userDyid = uuidv4();
     const dataCenter = config.dataCenter ?? "us";
     const baseUrl =
       dataCenter === "eu" ? "https://dy-api.eu/v2" : "https://dy-api.com/v2";
@@ -77,8 +80,6 @@ export class DynamicYieldClient {
         "dy-api-key": config.apiKey,
       },
     });
-    this.sessionId = null;
-    this.userDyid = null;
   }
 
   private setBody(body: any) {
