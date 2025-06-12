@@ -64,7 +64,6 @@ export class DynamicYieldClient {
     dataCenter: "us" | "eu";
     storage: Storage;
   }) {
-    this.sessionId = config.storage.getItem("dyjsession");
     this.userDyid = config.storage.getItem("dyid_server");
     const dataCenter = config.dataCenter ?? "us";
     const baseUrl =
@@ -82,7 +81,6 @@ export class DynamicYieldClient {
         if (!this.sessionId || !this.userDyid) {
           this.sessionId = sessionId;
           this.userDyid = userDyid;
-          config.storage.setItem("dyjsession", sessionId);
           config.storage.setItem("dyid_server", userDyid);
           return;
         }
