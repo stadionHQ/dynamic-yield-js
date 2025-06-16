@@ -58,6 +58,7 @@ export class DynamicYieldClient {
     null;
   private sessionId: string | null = null;
   private userDyid: string | null = null;
+  private initialized = false;
 
   constructor(config: {
     apiKey: string;
@@ -94,6 +95,32 @@ export class DynamicYieldClient {
         "dy-api-key": config.apiKey,
       },
     });
+
+    // Initialize session with a chooseVariations call
+    if (!this.initialized) {
+      this.initializeSession();
+      this.initialized = true;
+    }
+  }
+
+  private async initializeSession() {
+    try {
+      await this.chooseVariations({
+        context: {
+          page: {
+            type: "HOMEPAGE",
+            location: "homepage",
+            data: ["homepage"],
+          },
+          device: {},
+        },
+        selector: {
+          names: ["homepage"],
+        },
+      });
+    } catch (error) {
+      console.error("[DY] Error initializing session:", error);
+    }
   }
 
   private setBody(body: any) {
