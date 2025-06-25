@@ -16,6 +16,7 @@ type WithOptionalSessionAndUser<T> = T & {
   user?: {
     dyid: string;
     dyid_server?: string;
+    active_consent_accepted: boolean;
   };
 };
 
@@ -58,12 +59,14 @@ export class DynamicYieldClient {
     null;
   private sessionId: string | null = null;
   private userDyid: string | null = null;
+  private activeConsentAccepted: boolean | null = null;
   private initialized = false;
 
   constructor(config: {
     apiKey: string;
     dataCenter: "us" | "eu";
     storage: Storage;
+    activeConsentAccepted: boolean;
   }) {
     this.userDyid = config.storage.getItem("dyid_server");
     const dataCenter = config.dataCenter ?? "us";
@@ -83,6 +86,7 @@ export class DynamicYieldClient {
           this.sessionId = sessionId;
           this.userDyid = userDyid;
           config.storage.setItem("dyid_server", userDyid);
+          this.activeConsentAccepted = config.activeConsentAccepted;
           return;
         }
       })
@@ -131,6 +135,7 @@ export class DynamicYieldClient {
         },
         user: {
           dyid: this.userDyid ?? "",
+          active_consent_accepted: this.activeConsentAccepted,
         },
       },
       body
