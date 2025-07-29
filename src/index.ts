@@ -87,6 +87,9 @@ export class DynamicYieldClient {
           this.userDyid = userDyid;
           config.storage.setItem("dyid_server", userDyid);
           this.activeConsentAccepted = config.activeConsentAccepted;
+          if (!this.initialized) {
+            this.initialized = true;
+          }
           return;
         }
       })
@@ -99,32 +102,6 @@ export class DynamicYieldClient {
         "dy-api-key": config.apiKey,
       },
     });
-
-    // Initialize session with a chooseVariations call
-    if (!this.initialized) {
-      this.initializeSession();
-      this.initialized = true;
-    }
-  }
-
-  private async initializeSession() {
-    try {
-      await this.chooseVariations({
-        context: {
-          page: {
-            type: "HOMEPAGE",
-            location: "homepage",
-            data: ["homepage"],
-          },
-          device: {},
-        },
-        selector: {
-          names: ["homepage"],
-        },
-      });
-    } catch (error) {
-      console.error("[DY] Error initializing session:", error);
-    }
   }
 
   private setBody(body: any) {
