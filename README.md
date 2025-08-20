@@ -61,6 +61,7 @@ The client provides methods for all Dynamic Yield API endpoints:
 - `userDataApi()` - User data operations
 - `externalEventsApi()` - Track external events
 - `profileAnywhere()` - Access user profile data
+- `setActiveConsentAccepted()` - Set user consent status
 
 ## Configuration
 

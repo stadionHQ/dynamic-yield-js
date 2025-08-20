@@ -108,6 +108,10 @@ export class DynamicYieldClient {
     }
   }
 
+  setActiveConsentAccepted(value: boolean) {
+    this.activeConsentAccepted = value;
+  }
+
   private async initializeSession(initialCampaignName: string) {
     try {
       await this.chooseVariations({
