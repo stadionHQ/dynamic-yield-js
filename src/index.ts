@@ -70,6 +70,7 @@ export class DynamicYieldClient {
     initialCampaignName: string;
   }) {
     this.userDyid = config.storage.getItem("dyid_server");
+    this.activeConsentAccepted = config.activeConsentAccepted;
     const dataCenter = config.dataCenter ?? "us";
     const baseUrl =
       dataCenter === "eu" ? "https://dy-api.eu/v2" : "https://dy-api.com/v2";
@@ -87,7 +88,6 @@ export class DynamicYieldClient {
           this.sessionId = sessionId;
           this.userDyid = userDyid;
           config.storage.setItem("dyid_server", userDyid);
-          this.activeConsentAccepted = config.activeConsentAccepted;
           return;
         }
       })
